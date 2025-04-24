@@ -1,0 +1,46 @@
+
+High-Level Design (HLD)
+
+1. Frontend (React)
+   - Provides UI for user authentication via Google (Firebase)
+   - Allows PDF upload and question input
+   - Displays AI-generated answers
+
+2. Backend (FastAPI)
+   - Manages PDF upload and storage
+   - Extracts text from PDFs using PyMuPDF
+   - Handles question answering via Hugging Face model (FLAN-T5) through LangChain
+   - Stores user questions and answers using SQLite and SQLAlchemy
+
+3. Authentication
+   - Uses Firebase for Google OAuth login
+   - Backend verifies Firebase ID token on each request
+
+4. AI Integration
+   - LangChain handles prompt construction and interaction with the Hugging Face model
+   - Prompts include both question and document context for answer generation
+
+
+Low-Level Design (LLD)
+
+1. PDF Upload Flow
+   - Endpoint: /upload_pdf
+   - Accepts a single PDF per user, identified via UID from Firebase token
+   - Saves PDF locally in the uploads/ directory, replacing old file if exists
+
+2. Question Answering Flow
+   - Endpoint: /ask
+   - Extracts full text from user’s uploaded PDF
+   - If short, sends entire context to Hugging Face
+   - If long, splits text using LangChain and runs QA chain over chunks
+   - Combines answers and returns final response
+
+3. Database Design
+   - QA table stores userId, question, and answer
+   - Database used: SQLite (for simplicity and local persistence)
+
+4. Code Structure
+   - utils.py: Text extraction and answer generation functions
+   - fireBaseAuth.py: Token validation logic
+   - main.py: FastAPI routes
+   - HomePage.jsx: Core UI logic for upload and question/answer interaction
