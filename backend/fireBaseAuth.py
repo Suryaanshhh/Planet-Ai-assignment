@@ -2,7 +2,7 @@ import firebase_admin
 from firebase_admin import credentials, auth
 from fastapi import HTTPException, status
 data="backend/firebaseServiceAccount.json"
-cred = credentials.Certificate("backend/firebaseServiceAccount.json")
+cred = credentials.Certificate("firebaseServiceAccount.json")
 firebase_admin.initialize_app(cred)
 
 def verifyToken(token:str):
